@@ -1,6 +1,7 @@
 'use client'
 import { useWeb3 } from '../contexts/Web3Context'
-import { amoyChainId } from '../utils/polygonAmoy'
+import { networkParams } from '../utils/networks'
+import { DEFAULT_CHAIN_ID } from '../contexts/Web3Context'
 
 export default function WalletConnector() {
 
@@ -11,7 +12,7 @@ export default function WalletConnector() {
         await ensureCorrectNetwork()
     }
 
-    const isCorrectNetwork = chainId == amoyChainId;
+    const isCorrectNetwork = chainId == DEFAULT_CHAIN_ID;
 
     return (
         <>
@@ -26,7 +27,7 @@ export default function WalletConnector() {
 
                             {!isCorrectNetwork && (
                                 <button onClick={ensureCorrectNetwork} className='rounded-xl border border-gray-300 bg-gradient-to-b from-[#ffffff] to-[#ebebeb] p-3 px-6 text-sm leading-normal text-black shadow-sm hover:border-[#ececec] hover:to-[#ececec]'>
-                                    Switch to Amoy
+                                    Switch to {networkParams[DEFAULT_CHAIN_ID].chainName}
                                 </button>
                             )}
                         </>

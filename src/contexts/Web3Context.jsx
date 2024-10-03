@@ -2,9 +2,24 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { amoyChainId, switchToAmoy } from '../utils/polygonAmoy';
+import { switchToNetwork } from '../utils/networks';
 
 const Web3Context = createContext();
+
+
+export const DEFAULT_CHAIN_ID = 11155111; 
+
+// Use this guide to configure chainId for your dApp
+// 1: Ethereum Main Network (Mainnet)
+// 137: Polygon Main Network
+// 56: Binance Smart Chain Main Network
+// 42161: Arbitrum One
+// 10: Optimism
+// 80002: Polygon Amoy Test Network
+// 11155111: Sepolia Testnet
+
+
+
 
 export const BrowserProvider = ({ children }) => {
     const [provider, setProvider] = useState(null);
@@ -91,16 +106,16 @@ export const BrowserProvider = ({ children }) => {
     };
 
     const ensureCorrectNetwork = async () => {
-        if (provider && chainId !== amoyChainId) {
+        if (provider && chainId !== DEFAULT_CHAIN_ID) {
             try {
-                await switchToAmoy(provider);
+                await switchToNetwork(provider, DEFAULT_CHAIN_ID);
                 return true;
             } catch (error) {
                 console.error('Failed to switch network:', error);
                 return false;
             }
         }
-        return chainId === amoyChainId;
+        return chainId === DEFAULT_CHAIN_ID;
     };
 
     return (
