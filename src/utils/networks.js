@@ -104,9 +104,3 @@ export const switchToNetwork = async (provider, chainId) => {
         }
     }
 };
-
-// Get token balance for a given address on the current network
-export const getTokenBalance = async (provider, address) => {
-    const balance = await provider.getBalance(address);
-    return ethers.formatEther(balance);
-};

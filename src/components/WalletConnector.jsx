@@ -1,6 +1,6 @@
 'use client'
 import { useWeb3 } from '../contexts/Web3Context'
-import { networkParams, getTokenBalance } from '../utils/networks'
+import { networkParams } from '../utils/networks'
 import { DEFAULT_CHAIN_ID } from '../contexts/Web3Context'
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
