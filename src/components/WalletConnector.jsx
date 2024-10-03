@@ -1,11 +1,14 @@
 'use client'
 import { useWeb3 } from '../contexts/Web3Context'
-import { networkParams } from '../utils/networks'
+import { networkParams, getTokenBalance } from '../utils/networks'
 import { DEFAULT_CHAIN_ID } from '../contexts/Web3Context'
+import { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
 
 export default function WalletConnector() {
 
-    const { address, chainId, connectWallet, disconnectWallet, ensureCorrectNetwork } = useWeb3()
+    const { address, chainId, connectWallet, disconnectWallet, ensureCorrectNetwork, provider } = useWeb3()
+    const [nativeBalance, setNativeBalance] = useState('0');
 
     const handleConnectWallet = async () => {
         await connectWallet()
@@ -14,12 +17,34 @@ export default function WalletConnector() {
 
     const isCorrectNetwork = chainId == DEFAULT_CHAIN_ID;
 
+    // Function to fetch the native token balance
+    const fetchNativeBalance = async () => {
+        if (address && provider) {
+            const balance = await provider.getBalance(address);
+            const balanceInEther = ethers.formatEther(balance);
+            const formattedBalance = parseFloat(balanceInEther).toFixed(4);
+            setNativeBalance(formattedBalance.toString()); // Convert to string or format as needed
+        }
+    };
+
+    // Use useEffect to fetch balance when address or provider changes
+    useEffect(() => {
+        if (isCorrectNetwork) {
+            fetchNativeBalance();
+        } else {
+            setNativeBalance('0'); // Reset balance if not on the correct network
+        }
+    }, [address, provider, isCorrectNetwork]);
+
     return (
         <>
             <div className="relative flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                     {address ? (
                         <>
+                            <div className='cursor-pointer inline-flex items-center rounded-xl px-4 py-3 h-12 bg-gray-400 text-white backdrop-blur-xl'>
+                                Balance: {nativeBalance} {networkParams[chainId]?.nativeCurrency.symbol}
+                            </div>
                             <div className='px-8'>{address.slice(0, 6)}...{address.slice(-4)}</div>
                             <button onClick={disconnectWallet} className='rounded-xl  bg-gradient-to-b from-red-500 to-red-600 p-3 px-6 text-sm font-semibold leading-normal text-white shadow-sm hover:to-red-500'>
                                 Disconnect
